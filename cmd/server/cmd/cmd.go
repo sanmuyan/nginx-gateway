@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -30,11 +31,17 @@ const (
 	openrestyPath     = "openresty"
 	balancerConfigApi = "http://127.0.0.1:9001/configs"
 	redisAddr         = "127.0.0.1:6379"
-	serverBandAddr    = "127.0.0.1:9000"
+	serverBind        = "127.0.0.1:9000"
 )
 
 func init() {
 	rootCmd.Flags().StringVarP(&configFile, "config", "c", "", "config file")
+	rootCmd.Flags().IntP("log-level", "l", logLevel, "log level")
+	rootCmd.Flags().String("nginx-template-file", nginxTemplateFile, "nginx template file")
+	rootCmd.Flags().String("openresty-path", openrestyPath, "openresty path")
+	rootCmd.Flags().String("balancer-config-api", balancerConfigApi, "balancer config api")
+	rootCmd.Flags().String("redis-addr", redisAddr, "redis addr")
+	rootCmd.Flags().String("server-bind", serverBind, "server bind addr")
 }
 
 func initConfig() error {
@@ -53,7 +60,7 @@ func initConfig() error {
 	viper.SetDefault("openresty_path", openrestyPath)
 	viper.SetDefault("balancer_config_api", balancerConfigApi)
 	viper.SetDefault("redis_addr ", redisAddr)
-	viper.SetDefault("server_band_addr", serverBandAddr)
+	viper.SetDefault("server_bind", serverBind)
 
 	if len(configFile) > 0 {
 		viper.SetConfigFile(configFile)
@@ -61,16 +68,22 @@ func initConfig() error {
 		if err != nil {
 			return err
 		}
-	} else {
-		_ = viper.BindPFlag("log_level", rootCmd.Flags().Lookup("log-level"))
 	}
+	_ = viper.BindPFlag("log_level", rootCmd.Flags().Lookup("log-level"))
+	_ = viper.BindPFlag("nginx_template_file", rootCmd.Flags().Lookup("nginx-template-file"))
+	_ = viper.BindPFlag("openresty_path", rootCmd.Flags().Lookup("openresty-path"))
+	_ = viper.BindPFlag("balancer_config_api", rootCmd.Flags().Lookup("balancer-config-api"))
+	_ = viper.BindPFlag("redis_addr", rootCmd.Flags().Lookup("redis-addr"))
+	_ = viper.BindPFlag("server_bind", rootCmd.Flags().Lookup("server-bind"))
 
 	err := viper.Unmarshal(&config.Conf)
 	if err != nil {
 		return err
 	}
 	logrus.SetLevel(logrus.Level(config.Conf.LogLevel))
+	gin.SetMode(gin.ReleaseMode)
 	if logrus.Level(config.Conf.LogLevel) >= logrus.DebugLevel {
+		gin.SetMode(gin.DebugMode)
 		logrus.SetReportCaller(true)
 	}
 	return nil
@@ -85,8 +98,10 @@ func Execute() {
 		if err != nil {
 			logrus.Fatal(err)
 		}
+
 		logrus.Debugf("config %+v", config.Conf)
+
 		db.InitRedis()
-		controller.RunServer(config.Conf.ServerBandAddr)
+		controller.RunServer(config.Conf.ServerBind)
 	}
 }

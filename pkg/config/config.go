@@ -13,7 +13,7 @@ type Config struct {
 	OpenrestyPath     string `mapstructure:"openresty_path"`
 	BalancerConfigAPI string `mapstructure:"balancer_config_api"`
 	RedisAddr         string `mapstructure:"redis_addr"`
-	ServerBandAddr    string `mapstructure:"server_band_addr"`
+	ServerBind        string `mapstructure:"server_bind"`
 }
 
 var Conf Config
