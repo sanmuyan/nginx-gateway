@@ -4,9 +4,9 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"nginx-gateway/admin/controller"
 	"nginx-gateway/pkg/config"
 	"nginx-gateway/pkg/db"
+	"nginx-gateway/server/controller"
 	"path"
 	"runtime"
 )
@@ -14,8 +14,8 @@ import (
 var cmdReady bool
 
 var rootCmd = &cobra.Command{
-	Use:   "admin",
-	Short: "Nginx Gateway Server",
+	Use:   "server",
+	Short: "Nginx Gateway Server Admin",
 	Run: func(cmd *cobra.Command, args []string) {
 		cmdReady = true
 	},

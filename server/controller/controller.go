@@ -3,9 +3,9 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
-	"nginx-gateway/admin/service"
 	"nginx-gateway/pkg/config"
 	"nginx-gateway/pkg/response"
+	"nginx-gateway/server/service"
 )
 
 // API列表
