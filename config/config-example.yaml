@@ -3,4 +3,4 @@ nginx_template_file: config/nginx.conf.tmpl
 openresty_path: openresty
 balancer_config_api: http://127.0.0.1:9001/configs
 redis_addr: 127.0.0.1:6379
-server_bind_addr: 127.0.0.1:9000
+server_bind: 127.0.0.1:9000
