@@ -15,8 +15,11 @@ func RunServer(addr string) {
 }
 
 func router(r *gin.Engine) {
-	r.POST("/api/backend", Backend)
-	r.POST("/api/route", Route)
-	r.POST("/api/gateway", Gateway)
-	r.GET("/api/reload", Reload)
+	apiGroup := r.Group("/api")
+	{
+		apiGroup.POST("/backend", Backend)
+		apiGroup.POST("/route", Route)
+		apiGroup.POST("/gateway", Gateway)
+		apiGroup.GET("/reload", Reload)
+	}
 }
