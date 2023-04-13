@@ -8,6 +8,7 @@ import (
 	"nginx-gateway/pkg/config"
 	"nginx-gateway/pkg/db"
 	"nginx-gateway/server/controller"
+	"nginx-gateway/server/service"
 	"path"
 	"runtime"
 )
@@ -93,7 +94,12 @@ func Execute() {
 
 		logrus.Debugf("config %+v", config.Conf)
 
-		db.InitRedis()
-		controller.RunServer(config.Conf.ServerBind)
+		initConfigPost()
 	}
+}
+
+func initConfigPost() {
+	db.InitRedis()
+	service.NewService().WatchReload()
+	controller.RunServer(config.Conf.ServerBind)
 }

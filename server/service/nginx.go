@@ -35,7 +35,7 @@ func (s *Service) updateConfigAndReload() error {
 	return nil
 }
 
-func (s *Service) watchReload() {
+func (s *Service) WatchReload() {
 	logrus.Infoln("watch reload start")
 	var currentReloadTime int64
 	ticker := time.NewTicker(time.Second)
@@ -183,8 +183,4 @@ func (s *Service) updateNginxBackend() error {
 		return err
 	}
 	return nil
-}
-
-func init() {
-	go NewService().watchReload()
 }
