@@ -54,14 +54,6 @@ func initConfig() error {
 		},
 	})
 
-	viper.SetConfigName("config")
-	viper.SetDefault("log_level", logLevel)
-	viper.SetDefault("nginx_template_file", nginxTemplateFile)
-	viper.SetDefault("openresty_path", openrestyPath)
-	viper.SetDefault("balancer_config_api", balancerConfigApi)
-	viper.SetDefault("redis_addr ", redisAddr)
-	viper.SetDefault("server_bind", serverBind)
-
 	if len(configFile) > 0 {
 		viper.SetConfigFile(configFile)
 		err := viper.ReadInConfig()
