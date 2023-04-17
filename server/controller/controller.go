@@ -12,22 +12,26 @@ import (
 
 var svc = service.NewService()
 
+var respf = func() *response.Response {
+	return response.NewResponse()
+}
+
 func Backend(c *gin.Context) {
 	backend := &config.Backend{}
 	err := c.ShouldBindJSON(backend)
 	if err != nil {
 		logrus.Println(err)
-		response.Fail(400, c)
+		respf().Fail(response.HttpBadRequest).SetGin(c)
 		return
 	}
 
 	if err = svc.UpdateBackend(backend); err != nil {
 		logrus.Println(err)
-		response.Fail(500, c)
+		respf().Fail(response.HttpInternalServerError).SetGin(c)
 		return
 	}
 
-	response.Ok(c)
+	respf().Ok().SetGin(c)
 }
 
 func Gateway(c *gin.Context) {
@@ -35,16 +39,16 @@ func Gateway(c *gin.Context) {
 	err := c.ShouldBindJSON(gateway)
 	if err != nil {
 		logrus.Println(err)
-		response.Fail(400, c)
+		respf().Fail(response.HttpBadRequest).SetGin(c)
 		return
 	}
 	if err = svc.UpdateGateway(gateway); err != nil {
 		logrus.Println(err)
-		response.Fail(500, c)
+		respf().Fail(response.HttpInternalServerError).SetGin(c)
 		return
 	}
 
-	response.Ok(c)
+	respf().Ok().SetGin(c)
 }
 
 func Route(c *gin.Context) {
@@ -52,23 +56,23 @@ func Route(c *gin.Context) {
 	err := c.ShouldBindJSON(route)
 	if err != nil {
 		logrus.Println(err)
-		response.Fail(400, c)
+		respf().Fail(response.HttpBadRequest).SetGin(c)
 		return
 	}
 	if err = svc.UpdateRoute(route); err != nil {
 		logrus.Println(err)
-		response.Fail(500, c)
+		respf().Fail(response.HttpInternalServerError).SetGin(c)
 		return
 	}
-	response.Ok(c)
+	respf().Ok().SetGin(c)
 }
 
 func Reload(c *gin.Context) {
 	err := svc.Reload()
 	if err != nil {
 		logrus.Println(err)
-		response.Fail(500, c)
+		respf().Fail(response.HttpInternalServerError).SetGin(c)
 		return
 	}
-	response.Ok(c)
+	respf().Ok().SetGin(c)
 }
